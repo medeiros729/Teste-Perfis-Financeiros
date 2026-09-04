@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Teste de Personalidade Financeira — Big Five</title>
+<style>
+  :root {
+    --green: #0b4d2c;
+    --green2: #17633c;
+    --gold: #c7a34a;
+    --cream: #f7f5ef;
+    --text: #1f2a24;
+    --muted: #66736b;
+    --white: #ffffff;
+    --line: #dfe5df;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background: linear-gradient(135deg, #f4f6f1, #eef3ed);
+    color: var(--text);
+    min-height: 100vh;
+  }
+  .app {
+    width: min(760px, calc(100% - 28px));
+    margin: 28px auto;
+  }
+  .card {
+    background: var(--white);
+    border-radius: 22px;
+    box-shadow: 0 12px 40px rgba(11, 77, 44, .10);
+    overflow: hidden;
+  }
+  .top {
+    background: var(--green);
+    color: white;
+    padding: 26px 28px 22px;
+    border-bottom: 4px solid var(--gold);
+  }
+  .brand {
+    font-size: 12px;
+    letter-spacing: 1.4px;
+    text-transform: uppercase;
+    opacity: .82;
+    margin-bottom: 8px;
+  }
+  h1, h2, h3 { margin-top: 0; }
+  h1 { font-size: clamp(27px, 5vw, 40px); margin-bottom: 10px; }
+  .subtitle { line-height: 1.55; opacity: .92; margin: 0; }
+  .content { padding: 28px; }
+  .intro {
+    text-align: center;
+    padding: 18px 6px 8px;
+  }
+  .intro .emoji { font-size: 52px; margin-bottom: 10px; }
+  .intro h2 { font-size: 27px; color: var(--green); }
+  .intro p { line-height: 1.65; color: var(--muted); }
+  .rules {
+    background: var(--cream);
+    border: 1px solid #ebe5d3;
+    border-radius: 14px;
+    padding: 16px;
+    margin: 22px 0;
+    line-height: 1.55;
+    font-size: 14px;
+  }
+  button {
+    border: 0;
+    cursor: pointer;
+    font: inherit;
+  }
+  .primary {
+    width: 100%;
+    background: var(--green);
+    color: white;
+    padding: 16px 20px;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 16px;
+    transition: transform .15s, background .15s;
+  }
+  .primary:hover { background: var(--green2); transform: translateY(-1px); }
+  .progress-wrap { margin-bottom: 24px; }
+  .progress-info {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+  .progress {
+    height: 8px;
+    background: #e9eee9;
+    border-radius: 20px;
+    overflow: hidden;
+  }
+  .progress > div {
+    height: 100%;
+    background: var(--gold);
+    width: 0%;
+    transition: width .25s ease;
+  }
+  .question-number {
+    color: var(--gold);
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+  }
+  .question {
+    font-size: clamp(20px, 4vw, 26px);
+    line-height: 1.4;
+    margin-bottom: 22px;
+  }
+  .scale {
+    display: grid;
+    gap: 10px;
+  }
+  .option {
+    border: 2px solid var(--line);
+    background: white;
+    border-radius: 13px;
+    padding: 15px 16px;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    transition: all .15s;
+  }
+  .option:hover {
+    border-color: #9ab6a5;
+    background: #f8fbf8;
+  }
+  .option.selected {
+    border-color: var(--green);
+    background: #eef7f1;
+  }
+  .num {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: #edf1ed;
+    display: grid;
+    place-items: center;
+    font-weight: 700;
+    flex: 0 0 34px;
+    color: var(--green);
+  }
+  .selected .num { background: var(--green); color: white; }
+  .option-text { line-height: 1.35; }
+  .nav {
+    display: flex;
+    gap: 10px;
+    margin-top: 22px;
+  }
+  .secondary {
+    flex: 1;
+    background: #eef1ee;
+    color: var(--green);
+    padding: 14px;
+    border-radius: 11px;
+    font-weight: 700;
+  }
+  .nav .primary { flex: 2; }
+  .result-head {
+    text-align: center;
+    padding: 12px 0 24px;
+  }
+  .result-badge {
+    display: inline-block;
+    padding: 7px 12px;
+    border-radius: 30px;
+    background: #eef5ef;
+    color: var(--green);
+    font-weight: 700;
+    font-size: 13px;
+    margin-bottom: 14px;
+  }
+  .result-head h2 {
+    font-size: clamp(28px, 6vw, 42px);
+    color: var(--green);
+    margin-bottom: 8px;
+  }
+  .score {
+    color: var(--muted);
+    font-weight: 700;
+  }
+  .result-description {
+    background: var(--cream);
+    border-left: 4px solid var(--gold);
+    padding: 18px;
+    border-radius: 0 12px 12px 0;
+    line-height: 1.65;
+    margin: 20px 0;
+  }
+  .result-section h3 { color: var(--green); margin-bottom: 8px; }
+  .bars { display: grid; gap: 12px; margin: 18px 0 26px; }
+  .bar-row { display: grid; gap: 5px; }
+  .bar-label { display: flex; justify-content: space-between; font-size: 13px; font-weight: 700; }
+  .bar-bg { height: 11px; background: #e8ece8; border-radius: 20px; overflow: hidden; }
+  .bar-fill { height: 100%; background: var(--green); border-radius: 20px; }
+  .strategy {
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 18px;
+    line-height: 1.65;
+  }
+  .note {
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.5;
+    margin-top: 20px;
+    text-align: center;
+  }
+  .hidden { display: none !important; }
+  @media (max-width: 560px) {
+    .app { width: min(100% - 16px, 760px); margin: 8px auto; }
+    .top { padding: 22px 20px 18px; }
+    .content { padding: 20px; }
+    .option { padding: 13px; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="card">
+    <div class="top">
+      <div class="brand">Curso de Finanças — Lagoinha Gerações</div>
+      <h1>Seu Perfil Financeiro</h1>
+      <p class="subtitle">Teste de Personalidade Financeira (Big Five)</p>
+    </div>
+
+    <div id="intro" class="content">
+      <div class="intro">
+        <div class="emoji">🧠💰</div>
+        <h2>Como você se relaciona com o dinheiro?</h2>
+        <p>
+          Responda às 20 afirmações pensando em suas práticas financeiras habituais,
+          e não em como você gostaria de agir.
+        </p>
+      </div>
+      <div class="rules">
+        <strong>Como responder:</strong><br>
+        1 = Discordo Totalmente &nbsp;·&nbsp;
+        2 = Discordo &nbsp;·&nbsp;
+        3 = Neutro &nbsp;·&nbsp;
+        4 = Concordo &nbsp;·&nbsp;
+        5 = Concordo Totalmente
+      </div>
+      <button class="primary" onclick="startQuiz()">COMEÇAR TESTE →</button>
+    </div>
+
+    <div id="quiz" class="content hidden">
+      <div class="progress-wrap">
+        <div class="progress-info">
+          <span id="progressText">Pergunta 1 de 20</span>
+          <span id="progressPct">5%</span>
+        </div>
+        <div class="progress"><div id="progressBar"></div></div>
+      </div>
+
+      <div class="question-number" id="questionNumber"></div>
+      <div class="question" id="questionText"></div>
+      <div class="scale" id="options"></div>
+
+      <div class="nav">
+        <button id="backBtn" class="secondary" onclick="previousQuestion()">← Voltar</button>
+        <button id="nextBtn" class="primary" onclick="nextQuestion()">Próxima →</button>
+      </div>
+    </div>
+
+    <div id="result" class="content hidden">
+      <div class="result-head">
+        <div class="result-badge">SEU RESULTADO</div>
+        <h2 id="resultName"></h2>
+        <div class="score" id="resultScore"></div>
+      </div>
+
+      <div class="result-description" id="resultDescription"></div>
+
+      <div class="result-section">
+        <h3>Seu mapa de personalidade</h3>
+        <div class="bars" id="bars"></div>
+      </div>
+
+      <div class="result-section">
+        <h3>Estratégia de ajuste</h3>
+        <div class="strategy" id="strategy"></div>
+      </div>
+
+      <p class="note">
+        Não existem perfis “bons” ou “ruins”. O objetivo é reconhecer forças,
+        pontos cegos e modular comportamentos financeiros.
+      </p>
+
+      <button class="primary" onclick="restartQuiz()" style="margin-top:18px">FAZER NOVAMENTE</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const questions = [
+  "Costumo seguir tendências de consumo ou investir em algo porque vi amigos comentando ou participando.",
+  "Tenho dificuldade em dizer 'não' quando familiares ou amigos me pedem dinheiro emprestado.",
+  "Consigo adiar um desejo de compra imediato para focar em metas financeiras de longo prazo.",
+  "Sinto forte ansiedade ou estresse com minhas finanças e uso compras como uma válvula de escape.",
+  "Priorizo gastar meu dinheiro em viagens e experiências inovadoras, mesmo que isso signifique não planejar o futuro.",
+  "Gosto de organizar eventos e comemorações com amigos, mesmo que isso acabe estourando o meu orçamento.",
+  "Cedo a pressões de venda ou aceito comprar produtos que não preciso apenas para não parecer indelicado com o vendedor.",
+  "Tenho o hábito de registrar e controlar minhas receitas e despesas em uma planilha ou caderno de forma organizada.",
+  "Utilizo o cartão de crédito de forma descontrolada para fazer compras por impulso quando tenho um dia difícil.",
+  "Atraio-me facilmente por novidades, produtos tecnológicos ou investimentos de risco apenas pela curiosidade ou inovação.",
+  "Sinto que o otimismo excessivo me faz assumir compromissos financeiros maiores do que minha capacidade real de pagamento.",
+  "Costumo assumir dívidas ou emprestar meu nome como avalista para ajudar terceiros por pura empatia e generosidade.",
+  "Planejo minhas finanças de forma que o dízimo e as ofertas sejam separados antes de qualquer outra despesa.",
+  "Fico paralisado ou irritado com facilidade diante de pequenos imprevistos ou flutuações financeiras no orçamento.",
+  "Prefiro uma rotina financeira flexível e 'good vibes' a seguir um planejamento orçamentário rígido e metódico.",
+  "Prefiro resolver minhas dúvidas financeiras conversando com amigos ou em grupos, em vez de fazer uma análise racional e isolada.",
+  "Muitas vezes compro presentes caros ou pago contas de outros para me sentir aceito ou demonstrar carinho.",
+  "Evito contrair novas dívidas e prefiro esperar até ter o valor total para comprar o que preciso à vista.",
+  "Flutuações no meu humor afetam diretamente a minha propensão a gastar dinheiro sem critérios racionais.",
+  "Gosto de buscar novas fontes de renda paralela que utilizem minha criatividade e talentos pessoais inovadores."
+];
+
+const profiles = [
+  {
+    key: "E",
+    name: "Extroversão",
+    subtitle: "Efeito Manada",
+    questions: [0,5,10,15],
+    description: "Otimista e comunicativo, mas pode agir por excesso de confiança e seguir dicas sem analisar. O ponto de atenção é não deixar a influência do grupo substituir uma análise cuidadosa.",
+    strategy: "Use sua rede de apoio: compartilhe e monte seus planos financeiros de forma colaborativa com conselheiros piedosos, parceiros de confiança ou seu cônjuge antes de fechar negócios."
+  },
+  {
+    key: "A",
+    name: "Afabilidade",
+    subtitle: "Assertividade",
+    questions: [1,6,11,16],
+    description: "Gentil, empático e avesso a conflitos. Pode ter dificuldade em dizer 'não', tornando-se mais vulnerável a pressões de venda ou empréstimos perigosos.",
+    strategy: "Trabalhe a assertividade: entenda que dizer um 'não' amigável e honesto é uma atitude de integridade que protege a mordomia do seu lar e os recursos que pertencem a Deus."
+  },
+  {
+    key: "C",
+    name: "Conscienciosidade",
+    subtitle: "A Âncora",
+    questions: [2,7,12,17],
+    description: "Altamente disciplinado, focado, organizado e avesso a dívidas. O perigo é a rigidez excessiva e o perfeccionismo paralisante.",
+    strategy: "Evite a avareza e o medo: não permita que a busca por segurança financeira substitua sua fé e generosidade. Use sua disciplina como base para abençoar outros e consagrar dízimos."
+  },
+  {
+    key: "N",
+    name: "Neuroticismo",
+    subtitle: "Foco Emocional",
+    questions: [3,8,13,18],
+    description: "Apresenta maior sensibilidade ao estresse e às oscilações emocionais. Pode tender a usar o cartão de crédito e as compras como fuga ou para anestesiar frustrações.",
+    strategy: "Regulação Emocional: trate as feridas da alma. Identifique gatilhos de estresse e substitua as compras compulsivas por hábitos saudáveis e espirituais (oração, devocional) que não gerem despesas."
+  },
+  {
+    key: "O",
+    name: "Abertura",
+    subtitle: "Orçamento Flexível",
+    questions: [4,9,14,19],
+    description: "Criativo, flexível e focado em novas experiências ou viagens. O risco é adotar um estilo descompromissado ('good vibes') e negligenciar o planejamento e as consequências de longo prazo.",
+    strategy: "Crie estruturas flexíveis: não anule sua criatividade. Ao invés disso, planeje orçamentos flexíveis, criando categorias e fundos de poupança específicos para experiências e novos projetos."
+  }
+];
+
+let current = 0;
+let answers = Array(20).fill(null);
+
+function startQuiz() {
+  document.getElementById("intro").classList.add("hidden");
+  document.getElementById("result").classList.add("hidden");
+  document.getElementById("quiz").classList.remove("hidden");
+  current = 0;
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = questions[current];
+  document.getElementById("progressText").textContent = `Pergunta ${current + 1} de 20`;
+  const pct = Math.round(((current + 1) / 20) * 100);
+  document.getElementById("progressPct").textContent = `${pct}%`;
+  document.getElementById("progressBar").style.width = `${pct}%`;
+  document.getElementById("questionNumber").textContent = `Questão ${current + 1}`;
+  document.getElementById("questionText").textContent = q;
+
+  const options = document.getElementById("options");
+  options.innerHTML = "";
+  const labels = ["Discordo Totalmente", "Discordo", "Neutro", "Concordo", "Concordo Totalmente"];
+
+  labels.forEach((label, i) => {
+    const value = i + 1;
+    const btn = document.createElement("button");
+    btn.className = "option" + (answers[current] === value ? " selected" : "");
+    btn.innerHTML = `<span class="num">${value}</span><span class="option-text">${label}</span>`;
+    btn.onclick = () => selectAnswer(value);
+    options.appendChild(btn);
+  });
+
+  document.getElementById("backBtn").style.visibility = current === 0 ? "hidden" : "visible";
+  document.getElementById("nextBtn").textContent = current === 19 ? "VER MEU PERFIL →" : "Próxima →";
+}
+
+function selectAnswer(value) {
+  answers[current] = value;
+  renderQuestion();
+}
+
+function nextQuestion() {
+  if (answers[current] === null) {
+    alert("Escolha uma das cinco opções para continuar.");
+    return;
+  }
+  if (current < 19) {
+    current++;
+    renderQuestion();
+  } else {
+    showResult();
+  }
+}
+
+function previousQuestion() {
+  if (current > 0) {
+    current--;
+    renderQuestion();
+  }
+}
+
+function calculateScores() {
+  return profiles.map(p => ({
+    ...p,
+    score: p.questions.reduce((sum, index) => sum + answers[index], 0)
+  }));
+}
+
+function intensity(score) {
+  if (score <= 9) return "Baixo";
+  if (score <= 14) return "Médio";
+  return "Alto";
+}
+
+function showResult() {
+  const scores = calculateScores();
+
+  // Em caso de empate, mantém a ordem dos cinco fatores apresentada no material.
+  const winner = scores.reduce((best, item) => item.score > best.score ? item : best, scores[0]);
+
+  document.getElementById("quiz").classList.add("hidden");
+  document.getElementById("result").classList.remove("hidden");
+
+  document.getElementById("resultName").textContent = winner.name;
+  document.getElementById("resultScore").textContent =
+    `${winner.subtitle} • ${winner.score}/20 pontos • Intensidade ${intensity(winner.score)}`;
+
+  document.getElementById("resultDescription").textContent = winner.description;
+  document.getElementById("strategy").textContent = winner.strategy;
+
+  const bars = document.getElementById("bars");
+  bars.innerHTML = "";
+  scores.forEach(p => {
+    const row = document.createElement("div");
+    row.className = "bar-row";
+    row.innerHTML = `
+      <div class="bar-label">
+        <span>${p.name}</span>
+        <span>${p.score}/20 — ${intensity(p.score)}</span>
+      </div>
+      <div class="bar-bg"><div class="bar-fill" style="width:${(p.score/20)*100}%"></div></div>
+    `;
+    bars.appendChild(row);
+  });
+
+  window.scrollTo({top: 0, behavior: "smooth"});
+}
+
+function restartQuiz() {
+  answers = Array(20).fill(null);
+  current = 0;
+  document.getElementById("result").classList.add("hidden");
+  document.getElementById("quiz").classList.remove("hidden");
+  renderQuestion();
+  window.scrollTo({top: 0, behavior: "smooth"});
+}
+</script>
+</body>
+</html>
